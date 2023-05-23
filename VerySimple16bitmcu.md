@@ -9,7 +9,7 @@ Steps:
 3. Finally, write basic code examples.
 4. Verification
 
-I am using [phind](http://phind.com), which supposedly uses GPT4 as one underlying model. Also, Github Copilot is helping to write this document. Generally, instead of a dialogue mode I usually edited the prompt and started a new session to allow for consistency in the context. In most cases I had teh regenerate the response several times and picked the most suitable output.
+I am using [phind](http://phind.com), which supposedly uses GPT4 as one underlying model. Also, Github Copilot is helping to write this document. Generally, instead of the dialogue mode I usually edited the prompt and started a new session to allow for consistency in the context. In most cases I had teh regenerate the response several times and picked the most suitable output.
 
 ## Step1:
 
@@ -226,7 +226,7 @@ loop:
   BCC loop    ; 0010 | loop
 ```
 
-Looks about right. Interestingly phind was not able to figure out using constant from memory, without explicitly mentioning it, and tried to hallucinate an immediate load instruction.
+Looks about right. Interestingly, phind was not able to figure out using constants from memory, without me explicitly mentioning it, and tried to hallucinate an immediate load instruction.
 
 ## prime numbers
 
@@ -236,14 +236,14 @@ Trying to push things a bit further, I tried to ask it ot implement a prime numb
 
 ```
 Assume a 16-bit microprocessor in an accumulator based architecture. Register are accumulator (16 bit),
- PC (12 bit) and carry flag. All instructions use immediate addressing to a 12 bit memory address bus. 
- The instruction set is given below.
+PC (12 bit) and carry flag. All instructions use immediate addressing to a 12 bit memory address bus. 
+The instruction set is given below.
 
 Write a program that determines if a number is prime. The number to test is given in the memory location 
 "input". The program shall write 1 to the location "isprime" if the input number is prime and zero otherwise.
- constants 0,1,2 are given in memory locations zero, one, two. 
- 
- Consider that this processor has no division instruction.
+constants 0,1,2 are given in memory locations zero, one, two. 
+
+Consider that this processor has no division instruction.
 ```
 
 It seems that this is pushing things a bit too far, as additional instructions were hallucinated (DIV) or instructions were plainly used incorrectly.
