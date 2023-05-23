@@ -13,7 +13,11 @@ I am using [phind](http://phind.com), which supposedly uses GPT4 as one underlyi
 *Prompt:*
 
 ```
-Assume a 16-bit RISC microprocessor with 16 data registers R0-R15, C and Z flag. The following instructions shall be implemented: AND, XOR, OR, ADC, ADD, SUB (rx,ry,rz), LSL #imm4,Rx,Ry , LSR #imm4, Rx, Ry , LDI Rx,#simm8, LDIH Rx,#imm8, LD Rx, #simm4(Ry), ST #simm4(Rx), Ry, JMP #imm12, BCC #imm12, BCS #imm12, BZS #imm12. The PC is 12 bit, the other registers are 16 bit. The instruction are encoded into 16 bit words. List all instructions including encoding for each of them on a concise way. 
+Assume a 16-bit RISC microprocessor with 16 data registers R0-R15, C and Z flag. The following 
+instructions shall be implemented: AND, XOR, OR, ADC, ADD, SUB (rx,ry,rz), LSL #imm4,Rx,Ry , 
+LSR #imm4, Rx, Ry , LDI Rx,#simm8, LDIH Rx,#imm8, LD Rx, #simm4(Ry), ST #simm4(Rx), Ry, JMP #imm12, 
+BCC #imm12, BCS #imm12, BZS #imm12. The PC is 12 bit, the other registers are 16 bit. The instructions 
+are encoded into 16 bit words. List all instructions including encoding for each of them on a concise way. 
 
 Use this template:
 1. AND rx, ry, rz: bitwise AND operation
@@ -66,7 +70,11 @@ Very nice, this is a good starting point. I will use this to generate a Verilog 
 *Prompt:*
 
 ```
-Write a verilog implementation of the microprocessor with the given instruction set in a single module. Use as few lines of code as possible. inputs: clk,reset,memory_in output: memory_out,address, write_enable. Consider that each instruction is executed in one or more cycles, depending on whether an additional memory access is needed. Include a state machine to enable execution of multi-cycle instructions.```
+Write a verilog implementation of the microprocessor with the given instruction set in a single 
+module. Use as few lines of code as possible. inputs: clk,reset,memory_in output: memory_out,address, 
+write_enable. Consider that each instruction is executed in one or more cycles, depending on whether 
+an additional memory access is needed. Include a state machine to enable execution of multi-cycle 
+instructions.```
 
 The main issue I ran into was that the generated Verilog code turned out to be too long for the token window size of the LLM. Usually the LLM then started to skip parts of the code, suggesting to fill those in later. 
 ```
@@ -74,7 +82,8 @@ The main issue I ran into was that the generated Verilog code turned out to be t
 *Response:*
 
 ```
-Based on the given instruction set and requirements, here's a Verilog implementation of the microprocessor using a single module with a state machine to handle multi-cycle instructions:
+Based on the given instruction set and requirements, here's a Verilog implementation of the 
+microprocessor using a single module with a state machine to handle multi-cycle instructions:
 
 module microprocessor (input clk, reset, memory_in, output reg memory_out, address, write_enable);
   reg [3:0] regfile [15:0];
@@ -147,11 +156,17 @@ module microprocessor (input clk, reset, memory_in, output reg memory_out, addre
   end
 endmodule
 
-In this implementation, we use a state machine with four states: `S_FETCH`, `S_DECODE`, `S_EXECUTE`, and `S_MEM`. The state machine transitions between these states to handle multi-cycle instructions, such as `LD` and `ST`, which require additional memory access.
+In this implementation, we use a state machine with four states: `S_FETCH`, `S_DECODE`, 
+`S_EXECUTE`, and `S_MEM`. The state machine transitions between these states to handle 
+multi-cycle instructions, such as `LD` and `ST`, which require additional memory access.
 
-The module takes `clk`, `reset`, and `memory_in` as inputs, and outputs `memory_out`, `address`, and `write_enable`. The register file is represented by a 4-bit wide array of 16 registers, and the instruction set is encoded using a 4-bit opcode followed by register indices or immediate values, as specified in the given instruction set.
+The module takes `clk`, `reset`, and `memory_in` as inputs, and outputs `memory_out`, 
+`address`, and `write_enable`. The register file is represented by a 4-bit wide array 
+of 16 registers, and the instruction set is encoded using a 4-bit opcode followed by 
+register indices or immediate values, as specified in the given instruction set.
 
-The state machine transitions through the fetch, decode, and execute states for most instructions, with memory access handled in the `S_MEM` state when necessary. The `case`
+The state machine transitions through the fetch, decode, and execute states for most 
+instructions, with memory access handled in the `S_MEM` state when necessary. The `case`
 ```
 
 This response does not look too bad, but there are some bugs:
