@@ -74,10 +74,10 @@ Write a verilog implementation of the microprocessor with the given instruction 
 module. Use as few lines of code as possible. inputs: clk,reset,memory_in output: memory_out,address, 
 write_enable. Consider that each instruction is executed in one or more cycles, depending on whether 
 an additional memory access is needed. Include a state machine to enable execution of multi-cycle 
-instructions.```
+instructions.
+```
 
 The main issue I ran into was that the generated Verilog code turned out to be too long for the token window size of the LLM. Usually the LLM then started to skip parts of the code, suggesting to fill those in later. 
-```
 
 *Response:*
 
