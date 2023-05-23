@@ -170,8 +170,8 @@ instructions, with memory access handled in the `S_MEM` state when necessary. Th
 ```
 
 This response does not look too bad, but there are some bugs:
-- LDI, LDIH is not handled correctly
-- The carry flag is derived from a non-existing 17th bit of the accumulator
+- LDI not sign extending
+- The carry flag id not handled correctly in ADD
 
 Trying to fix this by additional prompting did only prompt the LLM to generate inconsistent code, its easier to fix that issue manually.
 
