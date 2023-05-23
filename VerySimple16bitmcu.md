@@ -9,7 +9,7 @@ Steps:
 3. Finally, write basic code examples.
 4. Verification
 
-I am using [phind](http://phind.com), which supposedly uses GPT4 as one underlying model. Also, Github Copilot is helping to write this document.
+I am using [phind](http://phind.com), which supposedly uses GPT4 as one underlying model. Also, Github Copilot is helping to write this document. Generally, instead of a dialogue mode I usually edited the prompt and started a new session to allow for consistency in the context. In most cases I had teh regenerate the response several times and picked the most suitable output.
 
 ## Step1:
 
@@ -80,7 +80,13 @@ Based on the given instruction set and the provided sources, you can implement t
 include a state machine to execute multi-cycle instructions. Here's an implementation 
 that you can use as a starting point:
 
-module microprocessor (input clk, input reset, input [15:0] memory_in, output [15:0] memory_out, output [11:0] address, output write_enable);
+module microprocessor
+   (input clk, 
+    input reset, 
+    input [15:0] memory_in, 
+    output [15:0] memory_out, 
+    output [11:0] address, 
+    output write_enable);
 
   // Registers
   reg [15:0] accumulator;
@@ -238,10 +244,9 @@ Write a program that determines if a number is prime. The number to test is give
  constants 0,1,2 are given in memory locations zero, one, two. 
  
  Consider that this processor has no division instruction.
-``´
+```
 
-It seems that this is pushing things a bit too far, as additional instructions were hallucinated (DIV)
-or instructions were plainly used incorrectl.
+It seems that this is pushing things a bit too far, as additional instructions were hallucinated (DIV) or instructions were plainly used incorrectly.
 
 
 
