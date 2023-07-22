@@ -175,3 +175,183 @@ This response does not look too bad, but there are some bugs:
 
 Trying to fix this by additional prompting did only prompt the LLM to generate inconsistent code, its easier to fix that issue manually.
 
+
+Corrected code as generated with ChatGPT using GPT4+code interpreter after feeding in an earlier version of this markdown file:
+
+module microprocessor (input clk, reset, memory_in, output reg memory_out, address, write_enable);
+  reg [3:0] regfile [15:0];
+  reg [15:0] PC, IR;
+  reg [3:0] rx, ry, rz, imm4;
+  reg [7:0] simm8, imm8;
+  reg [11:0] imm12;
+  reg carry, zero;
+  reg [3:0] state;
+  parameter S_FETCH = 4'b0000, S_DECODE = 4'b0001, S_EXECUTE = 4'b0010, S_MEM = 4'b0011;
+
+  always @(posedge clk or posedge reset) begin
+    if (reset) begin
+      state <= S_FETCH;
+    end else begin
+      case (state)
+        S_FETCH: begin
+          PC <= PC + 1;
+          IR <= memory_in;
+          state <= S_DECODE;
+        end
+        S_DECODE: begin
+          rx = IR[11:8];
+          ry = IR[7:4];
+          rz = IR[3:0];
+          imm4 = IR[3:0];
+          simm8 = {8{IR[7]}, IR[7:0]};
+          imm8 = IR[7:0];
+          imm12 = IR[11:0];
+          state <= S_EXECUTE;
+        end
+        S_EXECUTE: begin
+          case (IR[15:12])
+            4'b0000: regfile[rz] <= regfile[rx] & regfile[ry];
+            4'b0001: regfile[rz] <= regfile[rx] ^ regfile[ry];
+            4'b0010: regfile[rz] <= regfile[rx] | regfile[ry];
+            4'b0011: begin
+              {carry, regfile[rz]} <= regfile[rx] + regfile[ry] + carry;
+            end
+            4'b0100: begin
+              {carry, regfile[rz]} <= regfile[rx] + regfile[ry];
+            end
+            4'b0101: regfile[rz] <= regfile[rx] - regfile[ry];
+            4'b0110: regfile[ry] <= regfile[rx] << imm4;
+            4'b0111: regfile[ry] <= regfile[rx] >> imm4;
+            4'b1000: regfile[rx] <= simm8;
+            4'b1001: regfile[rx] <= {imm8, regfile[rx][7:0]};
+            4'b1010: begin
+              address <= regfile[ry] + imm4;
+              state <= S_MEM;
+            end
+            4'b1011: begin
+              address <= regfile[rx] + imm4;
+              memory_out <= regfile[ry];
+              write_enable <= 1;
+              state <= S_MEM;
+            end
+            4'b1100: PC <= imm12;
+            4'b1101: if (!carry) PC <= imm12;
+            4'b1110: if (carry) PC <= imm12;
+            4'b1111: if (zero) PC <= imm12;
+          endcase
+          if (state != S_MEM) state <= S_FETCH;
+        end
+        S_MEM: begin
+          if (IR[15:12] == 4'b1010) regfile[rx] <= memory_in;
+          write_enable <= 0;
+          state <= S_FETCH;
+        end
+      endcase
+    end
+  end
+endmodule
+
+# Adding Zero Flag Handling to the Verilog Code:
+
+corrected_verilog_code_with_zero_flag = """
+module microprocessor (input clk, reset, memory_in, output reg memory_out, address, write_enable);
+  reg [15:0] regfile [15:0];
+  reg [15:0] PC, IR;
+  reg [3:0] rx, ry, rz, imm4;
+  reg [7:0] simm8, imm8;
+  reg [11:0] imm12;
+  reg carry, zero;
+  reg [3:0] state;
+  parameter S_FETCH = 4'b0000, S_DECODE = 4'b0001, S_EXECUTE = 4'b0010, S_MEM = 4'b0011;
+
+  always @(posedge clk or posedge reset) begin
+    if (reset) begin
+      state <= S_FETCH;
+    end else begin
+      case (state)
+        S_FETCH: begin
+          PC <= PC + 1;
+          IR <= memory_in;
+          state <= S_DECODE;
+        end
+        S_DECODE: begin
+          rx = IR[11:8];
+          ry = IR[7:4];
+          rz = IR[3:0];
+          imm4 = IR[3:0];
+          simm8 = {8{IR[7]}, IR[7:0]};
+          imm8 = IR[7:0];
+          imm12 = IR[11:0];
+          state <= S_EXECUTE;
+        end
+        S_EXECUTE: begin
+          case (IR[15:12])
+            4'b0000: begin
+              regfile[rz] <= regfile[rx] & regfile[ry];
+              zero <= (regfile[rz] == 16'b0) ? 1'b1 : 1'b0;
+            end
+            4'b0001: begin
+              regfile[rz] <= regfile[rx] ^ regfile[ry];
+              zero <= (regfile[rz] == 16'b0) ? 1'b1 : 1'b0;
+            end
+            4'b0010: begin
+              regfile[rz] <= regfile[rx] | regfile[ry];
+              zero <= (regfile[rz] == 16'b0) ? 1'b1 : 1'b0;
+            end
+            4'b0011: begin
+              {carry, regfile[rz]} <= regfile[rx] + regfile[ry] + carry;
+              zero <= (regfile[rz] == 16'b0) ? 1'b1 : 1'b0;
+            end
+            4'b0100: begin
+              {carry, regfile[rz]} <= regfile[rx] + regfile[ry];
+              zero <= (regfile[rz] == 16'b0) ? 1'b1 : 1'b0;
+            end
+            4'b0101: begin
+              regfile[rz] <= regfile[rx] - regfile[ry];
+              zero <= (regfile[rz] == 16'b0) ? 1'b1 : 1'b0;
+            end
+            4'b0110: begin
+              regfile[ry] <= regfile[rx] << imm4;
+              zero <= (regfile[ry] == 16'b0) ? 1'b1 : 1'b0;
+            end
+            4'b0111: begin
+              regfile[ry] <= regfile[rx] >> imm4;
+              zero <= (regfile[ry] == 16'b0) ? 1'b1 : 1'b0;
+            end
+            4'b1000: begin
+              regfile[rx] <= simm8;
+              zero <= (regfile[rx] == 16'b0) ? 1'b1 : 1'b0;
+            end
+            4'b1001: begin
+              regfile[rx] <= {imm8, regfile[rx][7:0]};
+              zero <= (regfile[rx] == 16'b0) ? 1'b1 : 1'b0;
+            end
+            4'b1010: begin
+              address <= regfile[ry] + imm4;
+              state <= S_MEM;
+            end
+            4'b1011: begin
+              address <= regfile[rx] + imm4;
+              memory_out <= regfile[ry];
+              write_enable <= 1;
+              state <= S_MEM;
+            end
+            4'b1100: PC <= imm12;
+            4'b1101: if (!carry) PC <= imm12;
+            4'b1110: if (carry) PC <= imm12;
+            4'b1111: if (zero) PC <= imm12;
+          endcase
+          if (state != S_MEM) state <= S_FETCH;
+        end
+        S_MEM: begin
+          if (IR[15:12] == 4'b1010) regfile[rx] <= memory_in;
+          write_enable <= 0;
+          state <= S_FETCH;
+        end
+      endcase
+    end
+  end
+endmodule
+"""
+
+corrected_verilog_code_with_zero_flag
