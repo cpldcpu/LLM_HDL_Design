@@ -1,6 +1,6 @@
 # Another attempt at a 16-bit CPU
 
-Now its October 2023 and many new and updated AI tools became available. Let's give the very simple 16-bit CPU another try.I am planning to use Copilot mostly (with the chat mode), but maybe also GPT4 and Mistral7B (locally).
+Now its October 2023 and many new and updated AI tools became available. Let's give the very simple 16-bit CPU another try.I am planning to use Copilot mostly (with the chat mode), but maybe also GPT4.
 
 **Verdict**
 
