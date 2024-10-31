@@ -1,8 +1,8 @@
-# 16-bit CPU with "Claude-Sonnet-2.5" - 30th June 2024
+# 16-bit CPU with "Claude-3.5-Sonnet" - 30th June 2024
 
 Zero shot prompting with Claude Sonnets (Except the javascript emulator, where i had to refine the prompt and use multiple generations).
 
-This challenge does not seem to present any problem for Sonnet-2.5. 
+This challenge does not seem to present any problem for Sonnet-3.5. 
 
 ## The CPU
 
