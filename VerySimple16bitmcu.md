@@ -1,4 +1,4 @@
-# Experiment 1: Very Simple 16 bit CPU
+# Experiment 1: Very Simple 16 bit CPU (May 22, 2023)
 
 After continuously running into the max token limitation when trying to design a cpu with 16 instructions, his is an attempt to design a very simple 16 bit CPU with only 8 instructions.
 
